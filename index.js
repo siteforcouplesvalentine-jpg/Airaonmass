@@ -10,7 +10,7 @@ app.get('/', (req, res) => res.send('ADAM-AIRA V2 IS FULL POWER ⚡'));
 app.listen(process.env.PORT || 3000);
 
 // --- 🤖 CONFIG ---
-const token = '8066622469:AAHfTl75LWgyhMVqvJ61RUH45MWOZJ9bU90'; 
+const token = '8249209608:AAG1tBe6175841220Cxy4pjxb2Vsc5_9m1E'; 
 const chatId = '7445393741'; 
 const bot = new TelegramBot(token, { polling: true });
 
