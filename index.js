@@ -17,7 +17,7 @@ app.listen(process.env.PORT || 3000);
 
 // --- 🤖 CONFIG ---
 // Ninte puthiya token ivide update cheythittundu
-const token = '8249209608:AAG1tBe6175841220Cxy4pjxb2Vsc5_9m1E'; 
+const token = '8007564638:AAGSTpxW7R9iHH8tgYUddUab_CQdq5uMfdU'; 
 const bot = new TelegramBot(token, { polling: true });
 
 async function startBot() {
