@@ -1,16 +1,17 @@
 {
-  "name": "adam-aira-bot",
+  "name": "adam-aira",
   "version": "1.0.0",
-  "description": "WhatsApp Bug Bot with Pairing Code",
+  "description": "WhatsApp Bot on Render",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
   "dependencies": {
-    "@whiskeysockets/baileys": "latest",
+    "@whiskeysockets/baileys": "^6.5.0",
+    "node-telegram-bot-api": "^0.64.0",
+    "pino": "^8.19.0",
     "@hapi/boom": "^10.0.1",
-    "node-telegram-bot-api": "^0.61.0",
-    "pino": "^8.14.1",
-    "express": "^4.18.2"
+    "express": "^4.18.3",
+    "qrcode-terminal": "^0.12.0"
   }
 }
