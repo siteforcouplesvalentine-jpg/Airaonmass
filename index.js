@@ -1,4 +1,10 @@
-const { default: makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion, makeCacheableSignalKeyStore } = require("@whiskeysockets/baileys");
+const { 
+    default: makeWASocket, 
+    useMultiFileAuthState, 
+    DisconnectReason, 
+    fetchLatestBaileysVersion, 
+    makeCacheableSignalKeyStore 
+} = require("@whiskeysockets/baileys");
 const pino = require('pino');
 const TelegramBot = require('node-telegram-bot-api');
 const { Boom } = require('@hapi/boom');
@@ -6,12 +12,12 @@ const express = require('express');
 
 // --- 🌐 WEB SERVER (Keep-Alive) ---
 const app = express();
-app.get('/', (req, res) => res.send('ADAM-AIRA V2 IS FULL POWER ⚡'));
+app.get('/', (req, res) => res.send('ADAM-AIRA V2 IS ONLINE ⚡'));
 app.listen(process.env.PORT || 3000);
 
 // --- 🤖 CONFIG ---
+// Ninte puthiya token ivide update cheythittundu
 const token = '8249209608:AAG1tBe6175841220Cxy4pjxb2Vsc5_9m1E'; 
-const chatId = '7445393741'; 
 const bot = new TelegramBot(token, { polling: true });
 
 async function startBot() {
@@ -26,26 +32,37 @@ async function startBot() {
         },
         printQRInTerminal: false,
         logger: pino({ level: 'silent' }),
-        // Update browser for better connection stability
-        browser: ["Mac OS", "Chrome", "121.0.6167.184"]
+        // Windows Chrome browser setting to bypass "Couldn't Link" error
+        browser: ["Windows", "Chrome", "10.0.0"]
     });
 
-    // 📩 Pairing System
+    // 📩 Pairing System with Delay Logic
     bot.on('message', async (msg) => {
         const text = msg.text;
+        const chatId = msg.chat.id;
+
         if (text && text.startsWith('/pair')) {
             const num = text.split(' ')[1];
-            if (!num) return bot.sendMessage(msg.chat.id, "❌ Use: `/pair 91xxx`", { parse_mode: 'Markdown' });
+            if (!num) return bot.sendMessage(chatId, "❌ Use: `/pair 91xxx`", { parse_mode: 'Markdown' });
             
             try {
-                bot.sendMessage(msg.chat.id, "⏳ *Generating Pairing Code...*", { parse_mode: 'Markdown' });
-                // Clean the number
+                bot.sendMessage(chatId, "⏳ *Generating Pairing Code...*", { parse_mode: 'Markdown' });
+                
                 let phoneNumber = num.replace(/[^0-9]/g, '');
-                let code = await sock.requestPairingCode(phoneNumber);
-                bot.sendMessage(msg.chat.id, `⚡ *AIRA V2 CODE:* \n\n \`${code}\` \n\nEnter this in WhatsApp now!`, { parse_mode: 'Markdown' });
+                
+                // 3-second delay to ensure connection is ready
+                setTimeout(async () => {
+                    try {
+                        let code = await sock.requestPairingCode(phoneNumber);
+                        bot.sendMessage(chatId, `⚡ *AIRA V2 CODE:* \n\n \`${code}\` \n\nEnter this in WhatsApp now!`, { parse_mode: 'Markdown' });
+                    } catch (err) {
+                        console.log(err);
+                        bot.sendMessage(chatId, "❌ Error! Render 'Clear Build' cheythu restart cheyyu.");
+                    }
+                }, 3000);
+
             } catch (e) {
                 console.log(e);
-                bot.sendMessage(msg.chat.id, "❌ Error! Render Clear Build cheythu restart cheyyu.");
             }
         }
     });
@@ -53,7 +70,8 @@ async function startBot() {
     sock.ev.on('connection.update', (update) => {
         const { connection, lastDisconnect } = update;
         if (connection === 'open') {
-            bot.sendMessage(chatId, "✅ *Adam-Aira V2 Connected!* \nInni ninte WhatsApp-il ninnu .menu adikkam!");
+            console.log("✅ WhatsApp Connected!");
+            bot.sendMessage(bot.options.chatId || '7445393741', "✅ *Adam-Aira V2 Connected!* \nInni .menu adikkam!");
         }
         if (connection === 'close') {
             const shouldReconnect = (lastDisconnect.error instanceof Boom)?.output?.statusCode !== DisconnectReason.loggedOut;
@@ -71,20 +89,15 @@ async function startBot() {
         const body = msg.message.conversation || msg.message.extendedTextMessage?.text || "";
         const cmd = body.toLowerCase().trim();
 
-        // Commands (Ninte number-il ninnum work aakum)
+        // Simple Commands
         if (cmd === '.menu') {
-            await sock.sendMessage(from, { text: "⚡ *ADAM-AIRA V2 MENU* ⚡\n\n💥 .bug\n🚀 .ping\n🔥 .alive" });
+            await sock.sendMessage(from, { text: "⚡ *ADAM-AIRA V2 MENU* ⚡\n\n🚀 .ping\n🔥 .alive\n🛠️ .bug" });
         }
         if (cmd === '.ping') {
-            await sock.sendMessage(from, { text: "🚀 *Aira Speed:* 10ms" });
+            await sock.sendMessage(from, { text: "🚀 *Aira Speed:* Online" });
         }
-        if (cmd === '.bug') {
-            await sock.sendMessage(from, { text: "🛠️ *BUG MENU*\n\n1. .amigo\n2. .aira\n3. .infinity" });
-        }
-        if (cmd === '.amigo') await sock.sendMessage(from, { text: "ॣ".repeat(25000) });
-        if (cmd === '.aira') await sock.sendMessage(from, { text: "ॣ".repeat(50000) });
-        if (cmd === '.infinity') await sock.sendMessage(from, { text: "ॣ".repeat(80000) });
     });
 }
 
+console.log("⚡ ADAM-AIRA V2 STARTING...");
 startBot();
